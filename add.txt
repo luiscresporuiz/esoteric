@@ -1,0 +1,20 @@
+rev(a\.) = rev(a)
+rev(x a) = rev(a) x
+rev() =
+
+U(x) = U(x, 0123456789)
+U(x, x r) =
+U(x, y r) = 1 U(x, r)
+
+D(x) = D(x, 0123456789)
+D(, d r) = d
+D(1 x, d r) = D(x, r)
+
+A() = A(rev(\?), rev(\?), )\.
+A(x a, y b, c) = B(U(x) U(y) c, a, b)
+A(, b, ) = rev(b)
+A(, b, 1) = A(0, b, 1)
+A(a, , c) = A(, a, c)
+
+B(1111111111 res, a, b) = A(a, b, 1) D(res)
+B(res, a, b) = A(a, b, ) D(res)

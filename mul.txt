@@ -1,0 +1,41 @@
+# multiply two digits in unary
+muldd(1a,b) = b muldd(a,b)
+muldd(,b) =
+
+# split tens and units
+split(1111111111 n) = 1 split(n)
+split(n) = /n
+
+# a*b+c, a is a single digit
+muldn(a, bd;b, cd;c) = muldni(split(muldd(a,bd) cd), a, b, c)
+muldni(pt/pu, a, b, c) = pu; muldn(a, b, pt c)
+muldn(a, , cd;c) = muldni(split(cd), , , c)
+muldn(a, , ) =
+muldn(a, , cf) = cf;
+muldn(a, b, cf) = muldn(a, b, cf;)
+
+# main function
+mul(ad;a, b, res) = muli(muldn(ad,b,res), a, b)
+muli(rd;res, a, b) = rd; mul(a, b, res)
+mul(, b, res) = res
+
+# digit to unary
+U(x) = U(x, 0123456789)
+U(x, x r) =
+U(x, y r) = 1 U(x, r)
+
+# input conversion
+in(n\.) = in(n)
+in(nd n) = in(n) U(nd);
+in() =
+
+# unary to digit
+D(x) = D(x, 0123456789)
+D(, d r) = d
+D(1 x, d r) = D(x, r)
+
+# output conversion
+out(nd;n) = out(n) D(nd)
+out() =
+
+A() = out(mul(in(\?), in(\?), ))\.

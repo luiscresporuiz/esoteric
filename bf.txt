@@ -1,0 +1,104 @@
+# incrementing function
+inc(x0) = x1
+inc(x1) = inc(x) 0
+inc() =
+
+# decrementing function
+dec(x1) = x0
+dec(x0) = dec(x) 1
+dec() =
+
+# ASCII set
+set(010) = " !\"#$%&'()*+,-./"
+set(011) = "0123456789:;<=>?"
+set(100) = "@ABCDEFGHIJKLMNO"
+set(101) = "PQRSTUVWXYZ[\\]^_"
+set(110) = "`abcdefghijklmno"
+set(111) = "pqrstuvwxyz{|}~?"
+
+# code -> character
+chr(1x) = ?
+chr(00000111) = \!
+chr(00001001) = \>
+chr(00001010) = \.
+chr(00001100) = \;
+chr(00001101) = \:
+chr(00x) = ?
+chr(0 a b c x) = seli(set(a b c), x)
+seli(s, 0x) = selii(s,x)
+seli(a b c d e f g h s, 1x) = selii(s,x)
+selii(s, 0x) = seliii(s,x)
+selii(a b c d s, 1x) = seliii(s,x)
+seliii(a b c d s, 00) = a
+seliii(a b c d s, 01) = b
+seliii(a b c d s, 10) = c
+seliii(a b c d s, 11) = d
+
+# character -> code
+ord(\!) = 00000111
+ord(\>) = 00001001
+ord(\.) = 00001010
+ord(\;) = 00001100
+ord(\:) = 00001101
+ord(c) = src(c, 010)
+src(c, t) = src(c, t, set(t), 0000)
+src(c, t, c s, i) = 0 t i
+src(c, t, d s, i) = src(c, t, s, inc(i))
+src(c, 111, , i) = 11111111
+src(c, t, , i) = src(c, inc(t))
+
+# start
+A(p!i) = A(, p, 00000000, , , i)
+A(p) = A(p, \?)
+A(p, ) = A(p!)
+A(p, q) = A(p q)
+
+# main program A(p,q,c,l,r,i)
+# p=program done (reversed and with [ and ] swapped)
+# q=program to do
+# c=current cell
+# l=left tape
+# r=right tape
+# i=input
+
+# end
+A(p, , c, l, r, i) =
+
+# +-
+A(p, +q, c, l, r, i) = A(+p, q, inc(c), l, r, i)
+A(p, -q, c, l, r, i) = A(-p, q, dec(c), l, r, i)
+
+# <>
+A(p, <q, c, d/l, r, i) = A(<p, q, d, l, c/r, i)
+A(p, >q, c, l, d/r, i) = A(>p, q, d, c/l, r, i)
+A(p, >q, c, l, , i) = A(>p, q, 00000000, c/l, , i)
+
+# ,
+A(p, \,q, c, l, r, d i) = A(\,p, q, ord(d), l, r, i)
+A(p, \,q, c, l, r, ) = I(p, q, c, l, r, \?)
+I(p, q, c, l, r, d i) = A(\,p, q, ord(d), l, r, i)
+I(p, q, c, l, r, ) = A(\,p, q, c, l, r, )
+
+# .
+A(p, .q, c, l, r, i) = chr(c) A(.p, q, c, l, r, i)
+
+# find matching pair
+m(s) = m(, s, )
+m(r, [s, n) = m(]r, s, 1n)
+m(r, ]s, 1n) = m([r, s, n)
+m(r, ]s, ) = r/s
+m(r, /s, n) = m(r, s, n)
+m(r, c s, n) = m(c r, s, n)
+
+# [
+A(p, [q, 00000000, l, r, i) = jf(p, m(q), l, r, i)
+jf(p, g/q, l, r, i) =A([g]p, q, 00000000, l, r, i)
+A(p, [q, c, l, r, i) = A(]p, q, c, l, r, i)
+
+# ]
+A(p, ]q, 00000000, l, r, i) = A([p, q, 00000000, l, r, i)
+A(p, ]q, c, l, r, i) = jb(m(p), q, c, l, r, i)
+jb(g/p, q, c, l, r, i) = A(]p, g]q, c, l, r, i)
+
+# rest of characters
+A(p, x q, c, l, r, i) = A(p, q, c, l, r, i)
